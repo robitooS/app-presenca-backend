@@ -4,6 +4,7 @@
 
 package br.edu.mouralacerda.app.service;
 
+import br.edu.mouralacerda.app.dto.request.AlunoRegistroDTO;
 import br.edu.mouralacerda.app.exception.RecursoNaoEncontradoException;
 import br.edu.mouralacerda.app.model.Aluno;
 import br.edu.mouralacerda.app.model.Usuario;
@@ -19,15 +20,20 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     @Transactional
-    public Aluno registrarAluno(Aluno aluno) {
-        // Lógica de negócio: Verificar se já existe um aluno com o mesmo RA
-        alunoRepository.findByRa(aluno.getRa()).ifPresent(a -> {
-            throw new IllegalStateException("Já existe um aluno cadastrado com o RA: " + aluno.getRa());
+    public Aluno registrarAluno(AlunoRegistroDTO alunoDTO) { // Recebe o DTO
+        alunoRepository.findByRa(alunoDTO.getRa()).ifPresent(a -> {
+            throw new IllegalStateException("Já existe um aluno cadastrado com o RA: " + alunoDTO.getRa());
         });
 
-        // Define valores padrão antes de salvar
+        // Converte o DTO para a entidade
+        Aluno aluno = new Aluno();
+        aluno.setFirebaseUid(alunoDTO.getFirebaseUid());
+        aluno.setEmail(alunoDTO.getEmail());
+        aluno.setNome(alunoDTO.getNome());
+        aluno.setCurso(alunoDTO.getCurso());
+        aluno.setRa(alunoDTO.getRa());
         aluno.setTipoUsuario(Usuario.TipoUsuario.ALUNO);
-        aluno.setStatus(Usuario.StatusUsuario.PENDENTE); // Novos alunos podem precisar de aprovação
+        aluno.setStatus(Usuario.StatusUsuario.PENDENTE);
 
         return alunoRepository.save(aluno);
     }
