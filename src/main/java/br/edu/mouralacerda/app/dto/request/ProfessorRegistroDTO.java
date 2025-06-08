@@ -4,5 +4,12 @@
 
 package br.edu.mouralacerda.app.dto.request;
 
+import lombok.Data;
+
+@Data
 public class ProfessorRegistroDTO {
+    private String firebaseUid;
+    private String email;
+    private String nome;
+    private String curso;
 }

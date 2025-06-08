@@ -3,6 +3,10 @@
  */
 
 package br.edu.mouralacerda.app.dto.request;
+import lombok.Data;
 
+@Data
 public class MarcacaoPresenteDTO {
+    private String raAluno;
+    private String uuidSessao;
 }
