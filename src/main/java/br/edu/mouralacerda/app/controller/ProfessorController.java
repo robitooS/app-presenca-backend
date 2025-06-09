@@ -11,6 +11,7 @@ import br.edu.mouralacerda.app.model.Professor;
 import br.edu.mouralacerda.app.model.SessaoPresenca;
 import br.edu.mouralacerda.app.service.PresencaService;
 import br.edu.mouralacerda.app.service.ProfessorService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class ProfessorController {
     private ProfessorService professorService;
 
     @PostMapping("/registrar")
-    public ResponseEntity<ProfessorDTO> registrarProfessor(@RequestBody ProfessorRegistroDTO professorDTO) {
+    public ResponseEntity<ProfessorDTO> registrarProfessor(@Valid @RequestBody ProfessorRegistroDTO professorDTO) {
         // 1. Chama o serviço para executar a lógica de negócio
         Professor professorSalvo = professorService.registrarProfessor(professorDTO);
 

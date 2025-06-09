@@ -12,6 +12,7 @@ import br.edu.mouralacerda.app.model.Aluno;
 import br.edu.mouralacerda.app.model.RegistroPresenca;
 import br.edu.mouralacerda.app.service.AlunoService; // Importe o serviço
 import br.edu.mouralacerda.app.service.PresencaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class AlunoController {
     private AlunoService alunoService; // Injetamos o Service em vez do Repository
 
     @PostMapping("/create")
-    public ResponseEntity<AlunoDTO> createAluno(@RequestBody AlunoRegistroDTO alunoDTO) { // Recebe DTO
+    public ResponseEntity<AlunoDTO> createAluno(@Valid @RequestBody AlunoRegistroDTO alunoDTO) { // Recebe DTO
         Aluno novoAluno = alunoService.registrarAluno(alunoDTO);
         // Retorna um DTO de resposta, com status 201 Created
         return ResponseEntity.status(HttpStatus.CREATED).body(new AlunoDTO(novoAluno));
@@ -39,7 +40,7 @@ public class AlunoController {
     }
 
     @PostMapping("/presenca")
-    public ResponseEntity<RegistroPresencaDTO> marcarPresenca(@RequestBody MarcacaoPresenteDTO marcacaoDTO) {
+    public ResponseEntity<RegistroPresencaDTO> marcarPresenca(@Valid @RequestBody MarcacaoPresenteDTO marcacaoDTO) {
         RegistroPresenca registroSalvo = presencaService.registrarPresenca(marcacaoDTO);
         return ResponseEntity.ok(new RegistroPresencaDTO(registroSalvo));
     }

@@ -49,6 +49,7 @@ public class PresencaService {
 
         return sessaoPresencaRepository.save(novaSessao);
     }
+
     @Transactional
     public RegistroPresenca registrarPresenca(MarcacaoPresenteDTO marcacaoDTO) {
         // 1. Busca o aluno pelo RA
@@ -80,4 +81,5 @@ public class PresencaService {
         novoRegistro.setSessaoPresenca(sessao);
 
         return registroPresencaRepository.save(novoRegistro);
+    }
 }
