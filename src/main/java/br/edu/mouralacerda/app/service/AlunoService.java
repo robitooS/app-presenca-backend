@@ -1,7 +1,4 @@
-/**
- * @author higor.robinn on 08/06/2025.
- */
-
+// Caminho: robitoos/app-presenca/app-presenca-1130d2251b21483494fadca7a35ba1092cab8047/src/main/java/br/edu/mouralacerda/app/service/AlunoService.java
 package br.edu.mouralacerda.app.service;
 
 import br.edu.mouralacerda.app.dto.request.AlunoRegistroDTO;
@@ -20,12 +17,11 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     @Transactional
-    public Aluno registrarAluno(AlunoRegistroDTO alunoDTO) { // Recebe o DTO
+    public Aluno registrarAluno(AlunoRegistroDTO alunoDTO) {
         alunoRepository.findByRa(alunoDTO.getRa()).ifPresent(a -> {
             throw new IllegalStateException("Já existe um aluno cadastrado com o RA: " + alunoDTO.getRa());
         });
 
-        // Converte o DTO para a entidade
         Aluno aluno = new Aluno();
         aluno.setFirebaseUid(alunoDTO.getFirebaseUid());
         aluno.setEmail(alunoDTO.getEmail());

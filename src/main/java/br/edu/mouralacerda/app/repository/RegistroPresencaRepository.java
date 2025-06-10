@@ -18,4 +18,6 @@ public interface RegistroPresencaRepository extends JpaRepository<RegistroPresen
 
     Optional<RegistroPresenca> findByAlunoAndSessaoPresenca(Aluno aluno, SessaoPresenca sessaoPresenca);
     List<RegistroPresenca> findAllBySessaoPresenca(SessaoPresenca sessaoPresenca);
+
+    List<RegistroPresenca> findAllByAluno(Aluno aluno);
 }
