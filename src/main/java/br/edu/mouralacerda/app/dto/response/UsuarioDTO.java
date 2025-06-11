@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 public class UsuarioDTO {
     private Long id;
+    private String firebaseUid;
     private String nome;
     private String email;
     private Usuario.TipoUsuario tipoUsuario;
@@ -19,6 +20,7 @@ public class UsuarioDTO {
 
     public UsuarioDTO(Usuario usuario) {
         this.id = usuario.getId();
+        this.firebaseUid = usuario.getFirebaseUid();
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
         this.tipoUsuario = usuario.getTipoUsuario();

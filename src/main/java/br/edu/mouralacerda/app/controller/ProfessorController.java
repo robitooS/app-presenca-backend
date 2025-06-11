@@ -71,9 +71,9 @@ public class ProfessorController {
     @PostMapping("/alunos/{id}/aprovar")
     @PreAuthorize("hasAuthority('PROFESSOR')")
     // CORREÇÃO: O parâmetro agora é um Long 'id' para corresponder à URL e ao Service.
-    public ResponseEntity<UsuarioDTO> aprovarAluno(@PathVariable Long id) {
+    public ResponseEntity<UsuarioDTO> aprovarAluno(@PathVariable String uid) {
         // A chamada ao serviço agora passa o ID correto.
-        Usuario alunoAprovado = usuarioService.aprovarUsuario(id);
+        Usuario alunoAprovado = usuarioService.aprovarUsuario(uid);
         return ResponseEntity.ok(new UsuarioDTO(alunoAprovado));
     }
 

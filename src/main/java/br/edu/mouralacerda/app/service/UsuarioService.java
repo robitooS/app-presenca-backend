@@ -1,5 +1,6 @@
 package br.edu.mouralacerda.app.service;
 
+import br.edu.mouralacerda.app.dto.response.ProfessorDTO;
 import br.edu.mouralacerda.app.exception.RecursoNaoEncontradoException;
 import br.edu.mouralacerda.app.model.Usuario;
 import br.edu.mouralacerda.app.repository.UsuarioRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -17,13 +19,13 @@ public class UsuarioService {
 
     /**
      * Altera o status de um usuário para APROVADO.
-     * @param id O UID do usuário a ser aprovado.
+     * @param uid O UID do usuário a ser aprovado.
      * @return O usuário com o status atualizado.
      */
     @Transactional
-    public Usuario aprovarUsuario(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + id));
+    public Usuario aprovarUsuario(String uid) {
+        Usuario usuario = usuarioRepository.findByFirebaseUid(uid)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + uid));
 
         if (usuario.getStatus() != Usuario.StatusUsuario.PENDENTE) {
             throw new IllegalStateException("O usuário não pode ser aprovado, pois não está com status PENDENTE.");
@@ -70,5 +72,46 @@ public class UsuarioService {
     public Usuario buscarPorFirebaseUid(String firebaseUid) {
         return usuarioRepository.findByFirebaseUid(firebaseUid)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com Firebase UID: " + firebaseUid));
+    }
+
+    /**
+     * Busca todos os professores com status ATIVO e os converte para uma lista de DTOs.
+     * @return Uma lista de ProfessorDTO contendo os professores ativos.
+     */
+    @Transactional(readOnly = true)
+    public List<ProfessorDTO> buscarProfessoresAtivos() {
+        // 1. Busca no banco todos os professores com status "APROVADO"
+        List<Usuario> professoresAtivos = usuarioRepository.findByTipoUsuarioAndStatus(
+                Usuario.TipoUsuario.PROFESSOR,
+                Usuario.StatusUsuario.APROVADO
+        );
+
+        // 2. Converte a lista de Entidades (Usuario) para uma lista de DTOs (ProfessorDTO)
+        return professoresAtivos.stream()
+                .map(this::converterParaDTO) // Para cada usuário na lista, chama o método de conversão
+                .collect(Collectors.toList()); // Coleta os resultados em uma nova lista
+    }
+
+    /**
+     * Método auxiliar privado para converter uma entidade Usuario em um ProfessorDTO.
+     * Isso desacopla a representação do banco de dados da representação que a API expõe.
+     *
+     * @param usuario A entidade Usuario a ser convertida.
+     * @return Um objeto ProfessorDTO preenchido com os dados do usuário.
+     */
+    private ProfessorDTO converterParaDTO(Usuario usuario) {
+        // Cria uma nova instância do DTO
+        ProfessorDTO dto = new ProfessorDTO();
+
+        // Mapeia os campos da entidade para o DTO
+        dto.setId(usuario.getId());
+        dto.setNome(usuario.getNome());
+        dto.setEmail(usuario.getEmail());
+
+        // O status no DTO é uma String, então convertemos o Enum para String.
+        dto.setStatus(usuario.getStatus());
+
+        // Retorna o DTO preenchido
+        return dto;
     }
 }

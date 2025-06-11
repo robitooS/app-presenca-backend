@@ -24,8 +24,8 @@ public class AdminController {
 
     // Conforme diagrama: "Aprovar profs pendentes"
     @PostMapping("/professores/{uid}/aprovar")
-    public ResponseEntity<UsuarioDTO> aprovarProfessor(@PathVariable Long id) {
-        Usuario usuarioAprovado = usuarioService.aprovarUsuario(id);
+    public ResponseEntity<UsuarioDTO> aprovarProfessor(@PathVariable String uid) {
+        Usuario usuarioAprovado = usuarioService.aprovarUsuario(uid);
         return ResponseEntity.ok(new UsuarioDTO(usuarioAprovado));
     }
 
