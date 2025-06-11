@@ -1,7 +1,3 @@
-/**
- * @author higor.robinn on 08/06/2025.
- */
-
 package br.edu.mouralacerda.app.controller;
 
 import br.edu.mouralacerda.app.dto.request.ProfessorRegistroDTO;
@@ -74,7 +70,9 @@ public class ProfessorController {
      */
     @PostMapping("/alunos/{id}/aprovar")
     @PreAuthorize("hasAuthority('PROFESSOR')")
+    // CORREÇÃO: O parâmetro agora é um Long 'id' para corresponder à URL e ao Service.
     public ResponseEntity<UsuarioDTO> aprovarAluno(@PathVariable Long id) {
+        // A chamada ao serviço agora passa o ID correto.
         Usuario alunoAprovado = usuarioService.aprovarUsuario(id);
         return ResponseEntity.ok(new UsuarioDTO(alunoAprovado));
     }

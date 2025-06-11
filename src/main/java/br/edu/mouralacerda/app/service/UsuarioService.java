@@ -17,13 +17,13 @@ public class UsuarioService {
 
     /**
      * Altera o status de um usuário para APROVADO.
-     * @param usuarioId O ID do usuário a ser aprovado.
+     * @param id O UID do usuário a ser aprovado.
      * @return O usuário com o status atualizado.
      */
     @Transactional
-    public Usuario aprovarUsuario(Long usuarioId) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + usuarioId));
+    public Usuario aprovarUsuario(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + id));
 
         if (usuario.getStatus() != Usuario.StatusUsuario.PENDENTE) {
             throw new IllegalStateException("O usuário não pode ser aprovado, pois não está com status PENDENTE.");
@@ -35,13 +35,13 @@ public class UsuarioService {
 
     /**
      * Realiza um "soft delete" do usuário, alterando seu status para EXCLUIDO.
-     * @param usuarioId O ID do usuário a ser excluído.
+     * @param uid O ID do usuário a ser excluído.
      * @return O usuário com o status atualizado.
      */
     @Transactional
-    public Usuario excluirUsuario(Long usuarioId) {
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + usuarioId));
+    public Usuario excluirUsuario(String uid) {
+        Usuario usuario = usuarioRepository.findByFirebaseUid(uid)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com ID: " + uid));
 
         // Para não quebrar constraints de chave estrangeira, apenas mudamos o status.
         // Em um cenário real, você poderia também anonimizar os dados do usuário aqui.
@@ -57,5 +57,18 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<Usuario> listarUsuariosPendentes(Usuario.TipoUsuario tipoUsuario) {
         return usuarioRepository.findByTipoUsuarioAndStatus(tipoUsuario, Usuario.StatusUsuario.PENDENTE);
+    }
+
+    /**
+     * Busca um usuário pelo seu Firebase UID.
+     * Essencial para verificar se um usuário autenticado no Firebase já existe no banco de dados local.
+     * @param firebaseUid O UID fornecido pelo Firebase Authentication.
+     * @return O objeto Usuario correspondente.
+     * @throws RecursoNaoEncontradoException se o usuário não for encontrado.
+     */
+    @Transactional(readOnly = true)
+    public Usuario buscarPorFirebaseUid(String firebaseUid) {
+        return usuarioRepository.findByFirebaseUid(firebaseUid)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com Firebase UID: " + firebaseUid));
     }
 }

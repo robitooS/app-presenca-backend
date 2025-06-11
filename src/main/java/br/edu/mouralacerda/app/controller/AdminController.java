@@ -23,7 +23,7 @@ public class AdminController {
     private UsuarioService usuarioService;
 
     // Conforme diagrama: "Aprovar profs pendentes"
-    @PostMapping("/professores/{id}/aprovar")
+    @PostMapping("/professores/{uid}/aprovar")
     public ResponseEntity<UsuarioDTO> aprovarProfessor(@PathVariable Long id) {
         Usuario usuarioAprovado = usuarioService.aprovarUsuario(id);
         return ResponseEntity.ok(new UsuarioDTO(usuarioAprovado));
@@ -31,8 +31,8 @@ public class AdminController {
 
     // Conforme diagrama: "Excluir profs"
     @DeleteMapping("/professores/{id}")
-    public ResponseEntity<UsuarioDTO> excluirProfessor(@PathVariable Long id) {
-        Usuario usuarioExcluido = usuarioService.excluirUsuario(id);
+    public ResponseEntity<UsuarioDTO> excluirProfessor(@PathVariable String uid) {
+        Usuario usuarioExcluido = usuarioService.excluirUsuario(uid);
         return ResponseEntity.ok(new UsuarioDTO(usuarioExcluido));
     }
 
