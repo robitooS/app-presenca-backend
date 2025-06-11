@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class ProfessorDTO {
     private Long id;
-    private String uid;
+    private String firebaseUid;
     private String nome;
     private String email;
     private String curso;
@@ -19,7 +19,7 @@ public class ProfessorDTO {
 
     public ProfessorDTO(Professor professor) {
         this.id = professor.getId();
-        this.uid = professor.getFirebaseUid();
+        this.firebaseUid = professor.getFirebaseUid();
         this.nome = professor.getNome();
         this.email = professor.getEmail();
         this.curso = professor.getCurso();

@@ -34,6 +34,14 @@ public class ProfessorController {
     @Autowired
     private UsuarioService usuarioService;
 
+
+    @DeleteMapping("/alunos/{uid}/excluir")
+    @PreAuthorize("hasAuthority('PROFESSOR')")
+    public ResponseEntity<UsuarioDTO> excluirAluno(@PathVariable String uid) {
+        Usuario alunoExcluido = usuarioService.excluirUsuario(uid);
+        return ResponseEntity.ok(new UsuarioDTO(alunoExcluido));
+    }
+
     @PostMapping("/registrar")
     public ResponseEntity<ProfessorDTO> registrarProfessor(@Valid @RequestBody ProfessorRegistroDTO professorDTO) {
         Professor professorSalvo = professorService.registrarProfessor(professorDTO);
@@ -68,13 +76,23 @@ public class ProfessorController {
      * Aprova o cadastro de um aluno que está com status PENDENTE.
      * Mapeado da funcionalidade "Aprovar alunos pendentes" do diagrama.
      */
-    @PostMapping("/alunos/{id}/aprovar")
+    @PostMapping("/alunos/{uid}/aprovar")
     @PreAuthorize("hasAuthority('PROFESSOR')")
     // CORREÇÃO: O parâmetro agora é um Long 'id' para corresponder à URL e ao Service.
     public ResponseEntity<UsuarioDTO> aprovarAluno(@PathVariable String uid) {
         // A chamada ao serviço agora passa o ID correto.
         Usuario alunoAprovado = usuarioService.aprovarUsuario(uid);
         return ResponseEntity.ok(new UsuarioDTO(alunoAprovado));
+    }
+
+    @GetMapping("/ativos")
+    @PreAuthorize("isAuthenticated()") // Garante que apenas usuários logados (qualquer tipo) possam ver a lista
+    public ResponseEntity<List<ProfessorDTO>> getProfessoresAtivos() {
+        // O Controller delega a lógica de negócio para o Service.
+        List<ProfessorDTO> professoresAtivos = usuarioService.buscarProfessoresAtivos();
+
+        // Retorna a lista encontrada com um status HTTP 200 OK.
+        return ResponseEntity.ok(professoresAtivos);
     }
 
     /**

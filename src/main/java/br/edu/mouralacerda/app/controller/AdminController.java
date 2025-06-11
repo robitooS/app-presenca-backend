@@ -30,7 +30,7 @@ public class AdminController {
     }
 
     // Conforme diagrama: "Excluir profs"
-    @DeleteMapping("/professores/{id}")
+    @DeleteMapping("/professores/{uid}")
     public ResponseEntity<UsuarioDTO> excluirProfessor(@PathVariable String uid) {
         Usuario usuarioExcluido = usuarioService.excluirUsuario(uid);
         return ResponseEntity.ok(new UsuarioDTO(usuarioExcluido));
